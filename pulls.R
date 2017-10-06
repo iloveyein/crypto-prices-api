@@ -18,7 +18,7 @@ getdata <- function(url, path, parameters){
 
 ##set parameters
 url <- 'https://min-api.cryptocompare.com'
-path <- '/data/histoday'
+path <- '/data/histohour'
 fsym <- 'fsym=ETH'
 tsym <- 'tsym=CAD'
 tsyms <- 'tsyms=CAD,USD'
@@ -61,13 +61,23 @@ for(i in 1:length(symbols)){
   alldata[[i]] <-content$Data
 }
 
-str(alldata[[1]])
-prices <- matrix(0, nrow = length(alldata[[1]]$close), ncol = 10)
-prices[,1] <- alldata[[1]]$time        
+str(alldata[[2]])
+prices <- matrix(0, nrow = length(alldata[[1]]$close), ncol = 14)
+prices[,1] <- alldata[[1]]$time  
 for(i in 1:length(symbols)){
   prices[,i+1] <- alldata[[i]]$close
 }
+prices[,11] <- alldata[[1]]$volumefrom
+prices[,12] <- alldata[[1]]$volumeto
+prices[,13] <- alldata[[2]]$volumeto
+prices[,14] <- alldata[[2]]$volumefrom
 
-pricesdf <- as.data.frame(prices)
-names(pricesdf) <- c('time', 'BTC','ETH','XMR', 'ETC', 'ZEC', 'DASH', 'LTC', 'DOGE', 'NXT')
-pricesdf$time <- anytime(pricesdf$time)
+
+pricesdfhour <- as.data.frame(prices)
+names(pricesdfhour) <- c('time', 'BTC','ETH','XMR', 'ETC', 'ZEC', 'DASH', 'LTC', 'DOGE', 'NXT', 'BTCVOLFROM',
+                         'BTCVOLTO', 'ETHVOLTO', 'ETHVOLFROM')
+pricesdfhour$time <- anytime(pricesdfhour$time)
+
+path2 = "C://i love yein/pricesdfhour.csv"
+write.csv(pricesdfhour, file = path2)
+head(pricesdfhour)
